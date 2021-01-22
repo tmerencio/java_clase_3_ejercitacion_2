@@ -5,73 +5,41 @@ import java.util.Arrays;
 
 public class Ejercicio {
 
-    /*
-        1. convertir array de ints a array de strings
-
-        2. funcion filler de 0s, primero obtener número más grande y luego rellenar a la izquierda los demás para que tengan la misma cantidad de dígitos
-
-        3. crear 10 listas Li para los elementos que terminan en i, con i de 0-9.
-
-        4. rellenamos las listas con los números correspondientes
-
-        5. rearmamos el array
-     */
-
-    public static ArrayList<String> intArrayToString(int[] array){
-        String[] convertedArray = Arrays.stream(array)
-                .mapToObj(String::valueOf)
-                .toArray(String[]::new);
-
-        return new ArrayList<>(Arrays.asList(convertedArray));
-    }
-
-    public static int getLongestStringLength(ArrayList<String> array){
-        int maxLength = 0;
-
-        for (String s : array) {
-            if (s.length() > maxLength) {
-                maxLength = s.length();
-            }
-        }
-
-        return maxLength;
-    }
-
-    public static String padLeftZeros(String inputString, int length) {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("0".repeat(Math.max(0, length)));
-
-        return sb.substring(inputString.length()) + inputString;
-    }
     
     public static void radixSort(int[] array){
-        ArrayList<String> convertedArray = intArrayToString(array);
+        ArrayList<String> convertedArray = StringUtil.intArrayToString(array);
 
-        int numberOfDigits = getLongestStringLength(convertedArray);
+        int numberOfDigits = StringUtil.getLongestStringLength(convertedArray);
 
+        // Agrega ceros a la izquierda en todos los elementos del Array
         for (int i = 0; i < convertedArray.size(); i++) {
-            String padLeftZerosString = padLeftZeros(convertedArray.get(i), numberOfDigits);
+            String padLeftZerosString = StringUtil.padLeftZeros(convertedArray.get(i), numberOfDigits);
             convertedArray.set(i, padLeftZerosString);
         }
 
+        // Creo las 10 listas vacías
         ArrayList<ArrayList<String>> lists = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             lists.add(new ArrayList<>());
         }
 
+        // Recorro las posiciones de los dígitos de derecha a izquierda
         for (int j = numberOfDigits - 1; j>=0; j--){
+            // Agrego elementos a listas según su caracter en la posición j
             for (String s : convertedArray) {
                 int x = Character.getNumericValue(s.charAt(j));
                 lists.get(x).add(s);
             }
 
+            // Vacío el Array
             convertedArray.clear();
 
+            // Junto todos los elementos de las listas en el Array
             for (ArrayList<String> arrayList : lists) {
                 convertedArray.addAll(arrayList);
             }
 
+            // Vacío todas las listas L0-L9
             for (ArrayList<String> arrayList : lists) {
                 arrayList.clear();
             }
@@ -79,6 +47,7 @@ public class Ejercicio {
             System.out.println(j + ": " + convertedArray.toString());
         }
 
+        // Reordeno el Array de ints original
         int i = 0;
         for(String value : convertedArray){
             array[i] = Integer.parseInt(value);
